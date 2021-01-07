@@ -34,6 +34,10 @@ test:
 docker-build:
  image: docker:latest
  stage: docker-build
+ cache:
+   key: node-cache
+   paths:
+     - app/node_modules/
  services:
    - docker:dind
  script:
