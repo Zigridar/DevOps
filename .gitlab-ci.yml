@@ -32,7 +32,7 @@ test:
 
 docker-build-and-push:
  image: docker:latest
- stage: docker-build
+ stage: docker-build-and-push
  cache:
    key: node-cache
    paths:
