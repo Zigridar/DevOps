@@ -1,0 +1,8 @@
+/package-lock.json
+/client/package-lock.json
+/node_modules/*
+/client/node_modules/*
+/lora-test-server.*
+/.vscode/
+package-lock.json
+./client/package-lock.json
