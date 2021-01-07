@@ -7,14 +7,14 @@ node-build:
  image: node:10.23.1-alpine
  stage: node-build
  script:
-   - npm run get-dependencies
-   - npm run client:build
+   - npm run get-dependencies --prefix app
+   - npm run client:build --prefix app
 
 test:
   image: node:10.23.1-alpine
   stage: test
   script:
-    - cd ./client &&npm run test
+    - npm run test --prefix app/client
 
 cache:
  paths:
@@ -28,7 +28,7 @@ docker-build:
  script:
 #todo test
    - ls
-   - rm -rf client/
+   - rm -rf app/client/
    - docker build . --tag app
 #todo test
    - docker images
