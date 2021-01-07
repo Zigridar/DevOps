@@ -9,16 +9,27 @@ node-build:
  script:
    - npm run get-dependencies --prefix app
    - npm run client:build --prefix app
+ cache:
+   key: node-cache
+   paths:
+     - app/node_modules/
+     - app/client/node_modules/
+ artifacts:
+   paths:
+     - app/build/
+   expire_in: 5 min
 
 test:
   image: node:10.23.1-alpine
   stage: test
+  cache:
+    key: node-cache
+    paths:
+      - app/node_modules/
+      - app/client/node_modules/
   script:
+    - ls app
     - npm run test --prefix app/client
-
-cache:
- paths:
-   - node_modules/
 
 docker-build:
  image: docker:latest
@@ -27,7 +38,7 @@ docker-build:
    - docker:dind
  script:
 #todo test
-   - ls
+   - ls app
    - rm -rf app/client/
    - docker build . --tag app
 #todo test
