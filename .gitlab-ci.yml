@@ -33,13 +33,14 @@ test:
 docker-build-and-push:
  image: docker:latest
  stage: docker-build-and-push
-# cache:
-#   key: node-cache
-#   paths:
-#     - app/node_modules/
+ cache:
+   key: node-cache
+   paths:
+     - app/node_modules/
  services:
    - docker:dind
  script:
+   - ls app/node_modules
    - rm -rf app/client/
    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
    - docker build . --tag $DOCKER_USER/app:$CI_PIPELINE_IID
