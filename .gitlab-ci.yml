@@ -25,6 +25,9 @@ test:
   stage: test
   cache:
     key: node-cache
+    paths:
+      - app/node_modules/
+      - app/client/node_modules/
   script:
     - npm run test --prefix app/client
 
