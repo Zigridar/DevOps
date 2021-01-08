@@ -1,0 +1,8 @@
+---
+- name: copy docker-compose.yml
+  copy:
+    src: app
+    dest: /home
+
+- name: up app container
+  shell: cd /home/app &&docker-compose down &&docker-compose --env vars.env up -d

@@ -1,0 +1,2 @@
+[servers]
+dev ansible_host=devops ansible_host_key_checking=false

@@ -1,0 +1,8 @@
+---
+- name: copy monitoring files
+  copy:
+    src: monitoring
+    dest: /home
+
+- name: start docker-compose
+  shell: cd /home/monitoring &&docker-compose up -d
