@@ -40,7 +40,7 @@ docker-build-and-push:
  services:
    - docker:dind
  script:
-   - ls
+   - ls app
    - rm -rf app/client/
    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
    - docker build . --tag $DOCKER_USER/app:$CI_PIPELINE_IID
