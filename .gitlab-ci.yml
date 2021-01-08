@@ -78,5 +78,5 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -o StrictHostKeyChecking=no root@$HOST "echo $DOCKER_USER/app:$CI_PIPELINE_IID > /home/app/vars.env"
+    - ssh -o StrictHostKeyChecking=no root@$HOST "echo IMAGE=$DOCKER_USER/app:$CI_PIPELINE_IID > /home/app/vars.env"
     - ssh -o StrictHostKeyChecking=no root@$HOST "cd /home/app &&docker-compose down &&docker-compose --env vars.env up -d "
