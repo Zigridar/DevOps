@@ -30,7 +30,7 @@ kek:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
     ##
-    ## Create the SSH directory and give it the right permissions
+    ## Create the SSH directory and give it the right   permissions
     ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
