@@ -35,7 +35,7 @@ kek:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -o StrictHostKeyChecking=no root@194.87.248.220 ls
+    - ssh -o StrictHostKeyChecking=no root@194.87.248.220 touch kek
     - ls
 
 node-build:
