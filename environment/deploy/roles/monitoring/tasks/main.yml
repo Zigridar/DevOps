@@ -5,4 +5,4 @@
     dest: /home
 
 - name: start docker-compose
-  shell: cd /home/monitoring &&docker-compose up -d
+  shell: cd /home/monitoring &&docker-compose --log-level ERROR down &&docker-compose --log-level ERROR up -d
