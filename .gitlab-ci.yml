@@ -1,27 +1,9 @@
 # declare stages
 stages:
-  - node-build
   - test
+  - node-build
   - docker-build-and-push
   - deploy
-
-# get dependencies and build front-end
-node-build:
- image: node:10.23.1-alpine
- stage: node-build
- script:
-   - npm run get-dependencies --prefix app
-   - npm run client:build --prefix app
- cache:
-   key: node-cache
-   paths:
-     - app/node_modules/
-     - app/client/node_modules/
- # save front build for next stages
- artifacts:
-   paths:
-     - app/build/
-   expire_in: 5 min
 
 # run tests
 test:
@@ -33,7 +15,25 @@ test:
       - app/node_modules/
       - app/client/node_modules/
   script:
+    - npm run get-dependencies --prefix app
     - npm run test --prefix app/client
+
+# get dependencies and build front-end
+node-build:
+  image: node:10.23.1-alpine
+  stage: node-build
+  script:
+    - npm run client:build --prefix app
+  cache:
+    key: node-cache
+    paths:
+      - app/node_modules/
+      - app/client/node_modules/
+  # save front build for next stages
+  artifacts:
+    paths:
+      - app/build/
+    expire_in: 5 min
 
 # build new docker image from Dockerfile and push it to DockerHub
 docker-build-and-push:
