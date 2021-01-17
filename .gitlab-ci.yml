@@ -1,10 +1,11 @@
-#todo add comments
+# declare stages
 stages:
   - node-build
   - test
   - docker-build-and-push
   - deploy
 
+# get dependencies and build front-end
 node-build:
  image: node:10.23.1-alpine
  stage: node-build
@@ -16,11 +17,13 @@ node-build:
    paths:
      - app/node_modules/
      - app/client/node_modules/
+ # save front build for next stages
  artifacts:
    paths:
      - app/build/
    expire_in: 5 min
 
+# run tests
 test:
   image: node:10.23.1-alpine
   stage: test
@@ -32,6 +35,7 @@ test:
   script:
     - npm run test --prefix app/client
 
+# build new docker image from Dockerfile and push it to DockerHub
 docker-build-and-push:
  image: docker:latest
  stage: docker-build-and-push
@@ -42,41 +46,36 @@ docker-build-and-push:
  services:
    - docker:dind
  script:
-   - ls app
+   # drop image unused dir
    - rm -rf app/client/
+   # login to DockerHub
    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+   # build docker image and set pipeline_id as its tag
    - docker build . --tag $DOCKER_USER/app:$CI_PIPELINE_IID
+   # push image to DockerHub
    - docker push $DOCKER_USER/app:$CI_PIPELINE_IID
 
+# deploy to server
 deploy:
   stage: deploy
   image: ubuntu
 
   before_script:
-    ##
-    ## Install ssh-agent if not already installed, it is required by Docker.
-    ## (change apt-get to yum if you use an RPM-based image)
-    ##
+    # install ssh-agent if it hasn't installed
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
 
-    ##
-    ## Run ssh-agent (inside the build environment)
-    ##
+    # run ssh-agent (inside the build environment)
     - eval $(ssh-agent -s)
 
-    ##
-    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-    ## We're using tr to fix line endings which makes ed25519 keys work
-    ## without extra base64 encoding.
-    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
-    ##
+    # add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
     - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
 
-    ##
-    ## Create the SSH directory and give it the right   permissions
-    ##
+    # create the SSH directory and give it the right permissions
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+  # execute commands on the remote server from GitLba runner
   script:
+    # set current image tag to vars.env
     - ssh -o StrictHostKeyChecking=no root@$HOST "echo IMAGE=$DOCKER_USER/app:$CI_PIPELINE_IID > /home/app/vars.env"
-    - ssh -o StrictHostKeyChecking=no root@$HOST "cd /home/app &&docker-compose down &&docker-compose --env vars.env up -d "
+    # kill odl container and run newer
+    - ssh -o StrictHostKeyChecking=no root@$HOST "cd /home/app &&docker-compose --log-level ERROR down &&docker-compose --env vars.env --log-level ERROR up -d "

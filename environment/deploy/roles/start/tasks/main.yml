@@ -5,4 +5,4 @@
     dest: /home
 
 - name: up app container
-  shell: cd /home/app &&docker-compose down &&docker-compose --env vars.env up -d
+  shell: cd /home/app &&docker-compose --log-level ERROR down &&docker-compose --env vars.env --log-level ERROR up -d

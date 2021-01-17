@@ -1,10 +1,15 @@
 version: '3.1'
+
+# create container network
 networks:
   monitor-net:
     driver: bridge
+
+# create volumes
 volumes:
   prometheus_data: {}
   grafana_data: {}
+
 services:
   nodeexporter:
     image: prom/node-exporter:latest
